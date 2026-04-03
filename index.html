@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bioorganica | Interactive Content Strategy</title>
+    
+    <!-- Chosen Palette: Earthy Minimalist (Warm Beige Backgrounds, Deep Forest Green Text, Soft Olive Accents, White UI Cards) -->
+    <!-- Application Structure Plan: A single-page interactive dashboard designed to translate the Bioorganica content strategy into an explorable tool. 
+         1. Hero: Establishes brand identity and tone.
+         2. Strategic Pillars: Interactive tabs to explore the core thematic foundations without overwhelming text.
+         3. Content Mix Dashboard: Visualizes the distribution of content to prove strategy balance.
+         4. Interactive Calendar: The core utility. Now structurally segregated by Weeks (1-4), showing all 7 days. Cards open a modal with FULL, viable marketing copy, execution plans, and rationales.
+         This structure moves the user logically from high-level brand philosophy down to specific day-to-day execution. -->
+    <!-- Visualization & Content Choices: 
+         - Strategy Overview -> Goal: Inform -> Interactive Tabs -> Allows user to digest pillars one at a time. -> HTML/JS.
+         - Content Distribution -> Goal: Proportions -> Donut Chart -> Visually confirms the balanced spread across the 5 pillars. -> Chart.js.
+         - Content Calendar -> Goal: Organize/Filter -> Segregated Grid by Week -> Allows chronological exploration of the comprehensive 28-day schedule. -> HTML/Tailwind/JS.
+         CONFIRMING NO SVG/Mermaid used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        beige: {
+                            100: '#FDFBF7',
+                            200: '#F5F2EA',
+                            300: '#EBE5D6',
+                            400: '#DCD4C0'
+                        },
+                        green: {
+                            800: '#2A4026',
+                            900: '#1A2F16',
+                            accent: '#4A6B3C'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans: ['"Inter"', 'Helvetica', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FDFBF7;
+            color: #1A2F16;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        /* Custom scrollbar for aesthetic */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #F5F2EA; }
+        ::-webkit-scrollbar-thumb { background: #DCD4C0; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4A6B3C; }
+        
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-green-accent selection:text-beige-100">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-beige-100/90 backdrop-blur-md border-b border-beige-300">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="font-serif text-2xl font-bold tracking-wide text-green-900">BIOORGANICA.</div>
+            <div class="hidden md:flex space-x-6 text-sm font-medium text-green-800">
+                <a href="#pillars" class="hover:text-green-accent transition-colors">Strategic Pillars</a>
+                <a href="#mix" class="hover:text-green-accent transition-colors">Content Mix</a>
+                <a href="#calendar" class="hover:text-green-accent transition-colors">Interactive Calendar</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="max-w-4xl mx-auto px-6 py-20 text-center">
+        <span class="text-green-accent tracking-widest uppercase text-xs font-semibold mb-4 block">Digital Marketing & Content Strategy</span>
+        <h1 class="text-5xl md:text-6xl font-serif font-bold text-green-900 mb-6 leading-tight">Rooted in <i class="italic font-light">Purity.</i></h1>
+        <p class="text-lg md:text-xl text-green-800/80 max-w-2xl mx-auto leading-relaxed mb-10">
+            A premium, calm, and informative content ecosystem. We are not just selling castor oil; we are building a transparent, farmer-linked standard for pure, multi-purpose application.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <div class="px-6 py-3 bg-beige-200 rounded-full text-sm font-medium border border-beige-300">🌿 No Hard Selling</div>
+            <div class="px-6 py-3 bg-beige-200 rounded-full text-sm font-medium border border-beige-300">💧 Aesthetic & Minimal</div>
+            <div class="px-6 py-3 bg-beige-200 rounded-full text-sm font-medium border border-beige-300">📖 Education First</div>
+        </div>
+    </header>
+
+    <!-- Core Pillars Section -->
+    <section id="pillars" class="max-w-6xl mx-auto px-6 py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-serif font-bold text-green-900 mb-4">The 5 Core Pillars</h2>
+            <p class="text-green-800 max-w-2xl mx-auto">
+                Every piece of content falls into one of these foundational pillars. This section breaks down the strategy and messaging goals behind our communication architecture. Click a pillar to explore its focus.
+            </p>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Pillar Navigation -->
+            <div class="w-full md:w-1/3 flex flex-col gap-2" id="pillar-nav">
+                <!-- Buttons injected by JS -->
+            </div>
+            
+            <!-- Pillar Details -->
+            <div class="w-full md:w-2/3 bg-white p-8 rounded-2xl border border-beige-300 shadow-sm min-h-[300px]" id="pillar-content">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Mix / Chart Section -->
+    <section id="mix" class="bg-beige-200 py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-serif font-bold text-green-900 mb-4">Strategic Content Mix</h2>
+                <p class="text-green-800 max-w-2xl mx-auto">
+                    A visualization of our full 28-day plan, demonstrating a balanced approach across our content pillars.
+                </p>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-12">
+                <div class="w-full lg:w-1/2">
+                    <div class="chart-container">
+                        <canvas id="pillarChart"></canvas>
+                    </div>
+                </div>
+                <div class="w-full lg:w-1/2 max-w-md">
+                    <div class="bg-white p-6 rounded-2xl border border-beige-300 shadow-sm">
+                        <h3 class="text-xl font-serif font-bold mb-4">Balance Breakdown</h3>
+                        <ul class="space-y-3 text-sm" id="chart-legend-custom">
+                            <!-- Injected by JS -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Calendar Section -->
+    <section id="calendar" class="max-w-6xl mx-auto px-6 py-20">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-serif font-bold text-green-900 mb-4">Complete 4-Week Content Calendar</h2>
+            <p class="text-green-800 max-w-2xl mx-auto mb-6">
+                Explore the daily planned posts. The calendar is segregated by week to show the narrative flow. Click on any card to view the exact script, strategic rationale, and execution plan.
+            </p>
+            
+            <div class="inline-flex items-center justify-center gap-3 bg-white px-4 py-2 rounded-lg border border-beige-300 shadow-sm text-sm">
+                <label for="pillar-filter" class="font-bold text-green-900">Filter View by Pillar:</label>
+                <select id="pillar-filter" class="px-3 py-1 bg-beige-100 border border-beige-300 rounded focus:outline-none focus:ring-2 focus:ring-green-accent text-green-900">
+                    <option value="all">Show All Pillars</option>
+                    <option value="P1">P1: Source & Soil</option>
+                    <option value="P2">P2: Purity & Process</option>
+                    <option value="P3">P3: Education</option>
+                    <option value="P4">P4: Lifestyle Integration</option>
+                    <option value="P5">P5: Brand Philosophy</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Calendar Container (Weeks injected here) -->
+        <div id="calendar-container" class="space-y-16">
+            <!-- Weeks injected by JS -->
+        </div>
+        
+        <!-- Empty State (Hidden by default) -->
+        <div id="empty-state" class="hidden text-center py-12 text-green-800/60 font-medium">
+            No content scheduled matching these filters.
+        </div>
+    </section>
+
+    <!-- Detailed Content Modal -->
+    <div id="content-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6" aria-modal="true" role="dialog">
+        <!-- Backdrop -->
+        <div id="modal-backdrop" class="fixed inset-0 bg-green-900/60 backdrop-blur-sm transition-opacity opacity-0 cursor-pointer"></div>
+        
+        <!-- Modal Content Container -->
+        <div id="modal-content" class="bg-beige-100 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative border border-beige-300 transform scale-95 opacity-0 transition-all duration-300 flex flex-col">
+            
+            <!-- Header -->
+            <div class="sticky top-0 bg-beige-100/95 backdrop-blur z-10 border-b border-beige-300 px-8 py-5 flex justify-between items-start">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span id="modal-badge" class="text-[10px] font-bold px-2 py-1 rounded-full bg-gray-100 text-gray-800">Format</span>
+                        <span id="modal-date" class="text-xs font-bold text-green-accent uppercase tracking-wider">Week • Day</span>
+                    </div>
+                    <h3 id="modal-title" class="text-3xl font-serif font-bold text-green-900 leading-tight">Concept Title</h3>
+                </div>
+                <button onclick="closeModal()" class="text-green-800 hover:text-green-accent bg-beige-200 hover:bg-beige-300 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-8 space-y-8 text-green-900">
+                <!-- Pillar Context -->
+                <div class="bg-white p-5 rounded-xl border border-beige-300 shadow-sm flex items-start gap-4">
+                    <div id="modal-pillar-icon" class="text-3xl">🌿</div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-1" id="modal-pillar-title">Pillar</h4>
+                        <p class="text-sm text-green-800" id="modal-pillar-goal">Goal context</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- The "Why" -->
+                    <div>
+                        <h4 class="font-serif text-xl font-bold mb-3 flex items-center gap-2">🎯 Strategic Rationale (Why)</h4>
+                        <p id="modal-why" class="text-green-800 bg-beige-200/50 p-4 rounded-lg text-sm leading-relaxed border-l-4 border-green-accent h-full">
+                            Reasoning goes here.
+                        </p>
+                    </div>
+
+                    <!-- The "How" -->
+                    <div>
+                        <h4 class="font-serif text-xl font-bold mb-3 flex items-center gap-2">🛠️ Execution Plan (How)</h4>
+                        <p id="modal-how" class="text-green-800 bg-white p-4 rounded-lg text-sm leading-relaxed border border-beige-300 h-full">
+                            Execution details go here.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- The "Script/Copy" -->
+                <div>
+                    <h4 class="font-serif text-xl font-bold mb-3 flex items-center gap-2">📝 Complete Script / Copy</h4>
+                    <div class="bg-green-50 p-6 rounded-xl border border-green-200 relative">
+                        <button id="copy-script-btn" onclick="copyScript()" class="absolute top-3 right-3 text-green-800/60 hover:text-green-900 hover:bg-green-200/50 px-3 py-1 rounded text-xs font-bold font-mono transition-colors cursor-pointer focus:outline-none">
+                            COPY
+                        </button>
+                        <p id="modal-script" class="whitespace-pre-line text-green-900 font-medium leading-relaxed mt-2"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-green-900 border-t border-green-800 py-8 text-center text-beige-300 text-sm">
+        <p>Bioorganica Content Strategy & Architecture &copy; 2026</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- DATA STORE ---
+
+        const pillarsData = [
+            {
+                id: 'P1',
+                title: 'Pillar 1: Source & Soil',
+                icon: '🌱',
+                goal: 'Build emotional & ethical trust.',
+                messaging: '"Your oil starts long before extraction."',
+                ideas: ['Farmer partnerships', 'Behind-the-scenes castor sourcing', 'Soil → seed → harvest journey', 'Region-based storytelling']
+            },
+            {
+                id: 'P2',
+                title: 'Pillar 2: Purity & Process',
+                icon: '⚙️',
+                goal: 'Build credibility and demonstrate extraction standards.',
+                messaging: '"What you use should be clean, traceable, and honest."',
+                ideas: ['Hexane-free / Cold-pressed meaning', 'Refined vs pure castor oil', 'Adulteration awareness', 'Thick viscosity as proof of purity']
+            },
+            {
+                id: 'P3',
+                title: 'Pillar 3: Education',
+                icon: '📖',
+                goal: 'Position brand as a trusted authority for both B2B & B2C.',
+                messaging: '"Right oil. Right usage. Right impact."',
+                ideas: ['The power of Ricinoleic acid', 'Industrial (Latex) vs Wellness uses', 'Ayurvedic detoxification benefits', 'Castor myths vs facts']
+            },
+            {
+                id: 'P4',
+                title: 'Pillar 4: Lifestyle Integration',
+                icon: '🏡',
+                goal: 'Make the product relatable to daily modern routines.',
+                messaging: '"Small changes. Real impact."',
+                ideas: ['Daily rituals (Castor oil packs, lash care)', 'Deep conditioning habits', 'Traditional joint-care in modern life']
+            },
+            {
+                id: 'P5',
+                title: 'Pillar 5: Brand Philosophy',
+                icon: '✨',
+                goal: 'Build identity and a deeper connection.',
+                messaging: '"We don’t just sell castor oil. We stand for better choices."',
+                ideas: ['Why Bioorganica exists', 'Thoughts on the wellness industry', 'Sustainability approach', 'Farmer-first mindset']
+            }
+        ];
+
+        // FULL 28-DAY CALENDAR DATA
+        const calendarData = [
+            // --- WEEK 1 ---
+            { 
+                week: 'Week 1', day: 'Mon', format: 'Static', pillar: 'P5', 
+                concept: 'Rooted in Purity (Brand Intro).', 
+                desc: 'Establishing the core brand ethos. Source over bottle.',
+                script: "We are not just a castor oil brand. We are a clean wellness ecosystem.\n\nTrue purity isn't manufactured in a facility; it begins in the soil, with the castor seed, and through the hands of the farmer. When you choose Bioorganica, you aren't just buying an oil—you are choosing transparency, ethical sourcing, and uncompromised quality.\n\nThis is Bioorganica. Rooted in purity. 🌱\n\n#Bioorganica #RootedInPurity #CastorOil #KnowYourSource",
+                how: "Copy: Claude (for a nuanced, empathetic brand voice). \nVisuals: Use Nanobanana Pro (Gemini 3.1 Pro) to generate a hyper-realistic, premium top-down image of dark soil and raw castor seeds. Import into Adobe Express Pro for premium color grading and subtle watermark.",
+                why: "We must immediately establish Pillar 5. The objective is to set a premium tone. Nanobanana Pro ensures the soil/seed imagery looks authentic and hyper-real, building trust instantly."
+            },
+            { 
+                week: 'Week 1', day: 'Tue', format: 'Carousel', pillar: 'P3', 
+                concept: 'The Anatomy of Castor.', 
+                desc: 'Educational guide explaining why Castor is uniquely powerful.',
+                script: "[Slide 1]: Not all botanical oils are created equal. Let's look at the anatomy of Castor.\n[Slide 2]: The Secret: Ricinoleic Acid. Castor oil is made up of nearly 90% ricinoleic acid, a rare fatty acid not found in other common oils.\n[Slide 3]: The B2C Benefit. This unique acid makes castor incredibly anti-inflammatory, deeply moisturizing, and a powerful stimulant for hair follicles.\n[Slide 4]: The B2B Benefit. For manufacturers, this chemical stability makes raw castor the ultimate natural ingredient for high-grade latex, cosmetics, and ayurvedic formulations.\n\n[Caption]: One seed. Endless applications. Have you experienced the power of raw castor oil yet?",
+                how: "Copy: Gemini Pro (for structured, logical educational breakdown). \nVisuals: Use Nanobanana 2 Flash (Gemini 3.1 Flash) to generate clean, line-art infographic assets of castor seeds and chemical structures. Build the 4-slide layout in Canva AI Pro.",
+                why: "Highlights Ricinoleic Acid to elevate the brand to 'scientific authority'. Nanobanana 2 Flash is perfect here because it excels at creating flat, clean infographic assets that Canva can easily arrange."
+            },
+            { 
+                week: 'Week 1', day: 'Wed', format: 'Faceless Reel', pillar: 'P2', 
+                concept: 'Pure vs. Refined Castor.', 
+                desc: 'Kinetic typography & B-roll explaining extraction differences.',
+                script: "We often hear the word 'refined' and think it means 'better' or 'cleaner'. \n\nBut when it comes to castor oil, refining removes the very soul of the seed. Mass-market castor oils are often extracted using high heat and chemical solvents like Hexane just to squeeze out more volume. In the process, the oil loses its natural healing compounds and its thick, rich texture.\n\nA pure, cold-pressed castor oil feels different. It is highly viscous, deeply golden, and retains 100% of its natural ricinoleic acid.\n\nMake sure your castor oil is Hexane-free. Make the switch consciously.",
+                how: "Copy: Gemini Pro. \nVisuals: Faceless Reel (No Avatars). Use Canva AI Pro to combine high-quality stock B-roll of thick golden oil pouring with engaging kinetic typography (text moving on screen). Add a high-quality AI Voiceover.",
+                why: "Demystifies industry terms calmly. Removing lip-syncing avatars keeps the aesthetic premium and focuses the viewer entirely on the 'Hexane-free' text and the visual viscosity of the oil."
+            },
+            { 
+                week: 'Week 1', day: 'Thu', format: 'Reel', pillar: 'P4', 
+                concept: 'The Biology of Castor Oil Packs.', 
+                desc: 'Scientific explanation of why this wellness trend works.',
+                script: "[Text Overlay]: Why do Castor Oil Packs actually work? It's biology, not magic.\n\n[Voiceover/Caption]: You’ve seen castor oil packs everywhere, but why do they work? It comes down to molecular weight and absorption. \n\nBecause castor oil has a very low molecular weight, it can easily penetrate the stratum corneum (the outer layer of your skin). When placed over the liver or abdomen with a warm compress, the ricinoleic acid travels deep into the tissues, stimulating lymphatic drainage and increasing blood circulation to reduce deep inflammation.\n\nBut purity is critical. Your skin eats what you put on it. Never use chemically extracted oil for a pack. Stick to pure, cold-pressed Bioorganica. 🌿",
+                how: "Copy: Gemini Pro. \nVisuals: Use Nanobanana 2 Flash to generate a clean biological diagram of skin layers/absorption. Animate this diagram slightly in Canva AI Pro, paired with soft ambient audio.",
+                why: "Merges Lifestyle (P4) with Education (P3). Nanobanana 2 Flash provides the precise biological illustrations needed to explain molecular weight effectively."
+            },
+            { 
+                week: 'Week 1', day: 'Fri', format: 'Static', pillar: 'P1', 
+                concept: 'Direct Farmer Sourcing.', 
+                desc: 'Highlighting ethical partnerships and origin.',
+                script: "Purity begins with the hands that plant the seeds.\n\nAt Bioorganica, we don't buy anonymously from bulk commodity markets. We partner directly with the farmers who steward the castor fields. By removing the middlemen, we ensure fair compensation for their hard work, and complete traceability for your health.\n\nKnow your farmer. Know your oil. 👨🏽‍🌾🌱",
+                how: "Copy: Claude (for grounded storytelling). \nVisuals: Use Nanobanana Pro to generate a hyper-realistic, warm, sunlit portrait of a castor farmer. Bring into Adobe Express Pro to apply the brand's beige/green color overlays.",
+                why: "Humanizes the brand. Nanobanana Pro is crucial here because we need the human element to look 100% authentic, realistic, and emotionally resonant without looking like cheap stock."
+            },
+            { 
+                week: 'Week 1', day: 'Sat', format: 'Carousel', pillar: 'P2', 
+                concept: 'What "Cold-Pressed" Actually Means.', 
+                desc: 'Educational breakdown on the extraction method.',
+                script: "[Slide 1]: You see 'Cold-Pressed' on labels everywhere. But what does it actually mean for Castor Oil?\n[Slide 2]: No Heat Extraction. Traditional machines crush the castor seeds using mechanical pressure, not high heat.\n[Slide 3]: Hexane-Free. Cold-pressing ensures no chemical solvents are needed to extract the oil from the seed pulp.\n[Slide 4]: The Result? The thickest, most nutrient-dense oil possible. It acts as medicine for your body, inside and out.",
+                how: "Copy: Gemini Pro. \nVisuals: Nanobanana 2 Flash to generate simple, earthy illustrations of a traditional mechanical press vs a chemical beaker (with a red X). Layout in Canva AI Pro.",
+                why: "Builds credibility. The visual contrast between a mechanical press and chemical solvents solidifies the premium value of Bioorganica."
+            },
+            { 
+                week: 'Week 1', day: 'Sun', format: 'Reel', pillar: 'P4', 
+                concept: 'The Sunday Slowdown.', 
+                desc: 'Aesthetic deep-conditioning routine for the weekend.',
+                script: "[Text Overlay]: The Sunday Slowdown. 🌿\n[Caption]: Castor oil is nature's heaviest, most restorative moisturizer. Taking 15 minutes on a Sunday to massage warm Bioorganica castor oil into your scalp and split ends isn't just a beauty routine—it's a grounding ritual. \n\nThe ricinoleic acid locks in moisture and stimulates follicle circulation. Let it sit for an hour. Wash thoroughly. Breathe. 🤍",
+                how: "Copy: Claude. \nVisuals: Search Canva AI Pro for highly aesthetic, slow-motion B-roll of hair oiling/scalp massage. Pair with trending calm instrumental audio.",
+                why: "Lifestyle integration. Shows the product in a highly relatable, calming, and desirable context for the end consumer."
+            },
+
+            // --- WEEK 2 ---
+            { 
+                week: 'Week 2', day: 'Mon', format: 'Static', pillar: 'P5', 
+                concept: 'Quality Over Mass Production.', 
+                desc: 'Minimalist product shot explaining slow extraction.',
+                script: "We move slower, on purpose.\n\nMass production requires speed, extreme heat, and chemical solvents to extract every last drop of oil from a castor seed. We reject that process. \n\nBioorganica relies on slow, cold-pressed extraction. It yields less oil and takes more time, but produces an unparalleled standard of purity. We will always choose quality over volume.",
+                how: "Copy: Claude. \nVisuals: Use Nanobanana Pro to generate a hyper-realistic, minimalist 3D render of a Bioorganica bottle on a raw stone pedestal. Edit typography in Adobe Express Pro.",
+                why: "Reinforces premium B2B and B2C positioning. Nanobanana Pro ensures the product presentation looks like high-end luxury wellness."
+            },
+            { 
+                week: 'Week 2', day: 'Tue', format: 'Carousel', pillar: 'P4', 
+                concept: 'The 3-Drop Lash Routine.', 
+                desc: 'Highlighting a specific, highly popular B2C use case.',
+                script: "[Slide 1]: Ditch the chemical serums. The 3-Drop natural lash routine.\n[Slide 2]: The Why: Castor oil contains prostaglandin-like compounds that naturally extend the growth phase of your hair follicles.\n[Slide 3]: The How: Every night, apply exactly one tiny drop of pure Bioorganica castor oil to a clean spoolie brush or cotton swab.\n[Slide 4]: The Routine: Gently brush through your eyebrows and coat your upper lash line before sleep. Consistency is key.",
+                how: "Copy: Gemini Pro. \nVisuals: Use Nanobanana 2 Flash to create clean, minimalist vector icons of an eye and a spoolie brush. Assemble the carousel in Canva AI Pro.",
+                why: "Targets the core female demographic directly with a highly actionable, popular use-case for castor oil. Flash models keep the design uncluttered."
+            },
+            { 
+                week: 'Week 2', day: 'Wed', format: 'Reel', pillar: 'P1', 
+                concept: 'The Soil Connection.', 
+                desc: 'Showing the actual earth where the seeds grow.',
+                script: "[Text Overlay]: Purity can't be added in a lab. It has to be grown.\n[Caption]: If the soil is depleted, the seed is empty. If the seed is empty, the oil is lifeless. That is why our partnerships focus heavily on sustainable, rich soil health for our castor crops. What goes onto your skin comes from the earth. Make sure it's alive. 🌱",
+                how: "Copy: Claude. \nVisuals: Use Canva AI Pro to source premium macro B-roll of rich soil moving through hands. Combine with earthy ASMR sound design.",
+                why: "Deepens the Pillar 1 storytelling. Using Canva's video library ensures high framerate macro shots that perform well on Reels."
+            },
+            { 
+                week: 'Week 2', day: 'Thu', format: 'Carousel', pillar: 'P2', 
+                concept: 'How to Identify True Purity.', 
+                desc: 'Empowering consumers to test their castor oil.',
+                script: "[Slide 1]: Don't just trust the label. Trust your senses. How to identify pure castor oil.\n[Slide 2]: The Viscosity Test: This is the biggest giveaway. Pure cold-pressed castor oil is incredibly thick and heavy. If your oil feels thin or runny, it has been refined or diluted.\n[Slide 3]: The Aroma Test: Refined oils are deodorized. Pure castor oil has a distinct, deep, slightly earthy/nutty scent.\n[Slide 4]: The Color Test: Pure raw castor oil retains a beautiful, deep golden hue. It should never be perfectly clear.",
+                how: "Copy: Gemini Pro. \nVisuals: Nanobanana 2 Flash for creating simple comparison graphics (e.g., a thick droplet vs a runny droplet). Format in Canva AI Pro.",
+                why: "Builds absolute credibility. Gives the consumer tools to test the competition. Flash is used here to create clear, undeniable visual distinctions."
+            },
+            { 
+                week: 'Week 2', day: 'Fri', format: 'Static', pillar: 'P4', 
+                concept: 'The Healing Cabinet.', 
+                desc: 'Natural light photo of a holistic bathroom cabinet.',
+                script: "The foundation of holistic health starts in your cabinet.\n\nSwapping chemical-laden, synthetic lotions for pure, cold-pressed Castor Oil is one of the most powerful changes you can make. From deep joint relief to skin barrier repair, true healing only requires one pure ingredient.\n\nSmall changes. Deep impact. 🌿",
+                how: "Copy: Claude. \nVisuals: Generate a hyper-realistic, warm, natural-light photo of a minimalist bathroom shelf using Nanobanana Pro. Color grade in Adobe Express Pro.",
+                why: "Positions castor oil as an absolute daily essential. Nanobanana Pro creates an aspirational lifestyle aesthetic."
+            },
+            { 
+                week: 'Week 2', day: 'Sat', format: 'Faceless Reel', pillar: 'P3', 
+                concept: 'The Myth of "Clear" Oil.', 
+                desc: 'Debunking a common visual misconception via split screen.',
+                script: "For decades, marketing has told us that if an oil is crystal clear, it means it's clean.\n\nThis is a myth, especially for Castor Oil. \n\nTo make castor oil perfectly clear and odorless, it has to be chemically bleached and deodorized. Real, pure castor oil extracted straight from the seed is naturally thick, rich in golden color, and carries the distinct smell of the earth. \n\nDon't be afraid of color. Color means active ricinoleic acid. Color means life.",
+                how: "Copy: Gemini Pro. \nVisuals: Faceless Reel. Create a split-screen video in Canva AI Pro showing a clear liquid vs a rich golden liquid, with bold kinetic text overlays and an AI voiceover.",
+                why: "Re-educates the consumer away from mass-market brainwashing. Removing the avatar forces the user to focus entirely on the visual difference in the oil."
+            },
+            { 
+                week: 'Week 2', day: 'Sun', format: 'Reel', pillar: 'P4', 
+                concept: 'Generational Wisdom.', 
+                desc: 'Aesthetic joint massage (Elder/Family).',
+                script: "[Voiceover - warm, nostalgic]: Some traditions shouldn't be modernized. They should just be preserved.\n[Caption]: Massaging warm castor oil into aching joints isn't a new wellness trend. It is a generational act of care passed down through centuries. Pure castor oil, warm hands, and deep anti-inflammatory relief. \n\nWho passed down their natural remedies to you? 🤍",
+                how: "Copy: Claude. \nVisuals: Source cinematic, highly emotional B-roll of an elder's hands being massaged via Canva AI Pro. Overlay soft acoustic audio.",
+                why: "Taps into deep cultural nostalgia and emotion, highlighting the B2C joint-care aspect without needing complex generation."
+            },
+
+            // --- WEEK 3 ---
+            { 
+                week: 'Week 3', day: 'Mon', format: 'Static', pillar: 'P1', 
+                concept: 'Region-Based Storytelling.', 
+                desc: 'Highlighting the geography of our sourcing.',
+                script: "Terroir isn't just for wine. It's for seeds, too.\n\nThe quality of a castor seed is entirely dependent on the micro-climate and soil mineral content of the region it grows in. We don't source randomly. We source geographically, finding the exact arid farms where nature provides the perfect stress conditions for the seeds to produce the highest ricinoleic acid content.",
+                how: "Copy: Claude. \nVisuals: Use Nanobanana Pro to generate a hyper-realistic, breathtaking landscape of an arid castor farming region. Finalize with Adobe Express Pro.",
+                why: "Adds a layer of premium sophistication ('terroir') to the product. Pro models are required to make the landscape look natural and majestic."
+            },
+            { 
+                week: 'Week 3', day: 'Tue', format: 'Carousel', pillar: 'P3', 
+                concept: 'Ayurveda & Castor Oil.', 
+                desc: 'Matching the oil to Ayurvedic practices.',
+                script: "[Slide 1]: Known as 'Eranda Taila' in Ayurveda, Castor oil is considered the king of detoxification.\n[Slide 2]: Vata Balancing: Castor oil is heavy, warming, and sweet—making it the ultimate remedy for balancing dry, cold, and erratic Vata energy.\n[Slide 3]: Joint Care: In Ayurvedic practice, warm castor oil is applied directly to arthritic or stiff joints to draw out 'Ama' (toxins) and reduce swelling.\n[Slide 4]: Lymphatic Flow: Used externally in packs, it is trusted by practitioners to stimulate stagnant lymph and promote deep tissue detox.",
+                how: "Copy: Gemini Pro. \nVisuals: Nanobanana 2 Flash to generate subtle, modern interpretations of traditional Ayurvedic elements. Layout in Canva AI Pro.",
+                why: "Directly targets the 'Ayurveda / natural lifestyle followers'. Flash creates the perfect balance of modern and traditional graphics."
+            },
+            { 
+                week: 'Week 3', day: 'Wed', format: 'Reel', pillar: 'P2', 
+                concept: 'The Adulteration Problem.', 
+                desc: 'Raising awareness of fake oils in the market.',
+                script: "[Text Overlay]: Are you paying for pure castor oil, but getting cheap fillers?\n[Caption]: The botanical oil industry is notorious for adulteration. Many 'pure' castor oils are secretly blended with cheap mineral oils or liquid paraffin to reduce costs and thin out the texture. \n\nAt Bioorganica, our direct-to-farmer model and strict cold-press facilities mean exactly ONE ingredient goes into the bottle. Nothing added, nothing hidden. Read your labels. Demand transparency.",
+                how: "Copy: Gemini Pro. \nVisuals: Fast-paced reel created in Canva AI Pro, combining label-reading B-roll with dynamic text transitions.",
+                why: "Positions Bioorganica as the safe, honest choice. Heavy reliance on Canva text animation ensures the message is read even without sound."
+            },
+            { 
+                week: 'Week 3', day: 'Thu', format: 'Static', pillar: 'P5', 
+                concept: 'No Fear, Just Facts.', 
+                desc: 'A text-based graphic stating our marketing stance.',
+                script: "We will never use fear to sell you health.\n\nYou won't see us claiming that 'other brands will kill you' or using panic-based marketing. We believe that when you are presented with transparent facts, ethical sourcing, and genuine purity, the choice becomes obvious. \n\nCalm, conscious consumption. That is the Bioorganica way.",
+                how: "Copy: Claude. \nVisuals: No AI image generation needed. Use Adobe Express Pro for an elegant, typography-only design on a warm beige background.",
+                why: "Directly addresses the brief's constraint: 'Avoid fear-based marketing'. Using Adobe Express ensures the typography is flawless and authoritative."
+            },
+            { 
+                week: 'Week 3', day: 'Fri', format: 'Faceless Reel', pillar: 'P4', 
+                concept: 'Castor as the Ultimate Carrier.', 
+                desc: 'Explaining how to mix essential oils deeply.',
+                script: "Did you know you should never apply essential oils directly to your skin?\n\nThey must be diluted in a high-quality 'carrier oil'. But if you want those essential oils to reach deep into your tissues—like applying peppermint oil for a sore muscle—Castor Oil is your best choice.\n\nBecause of its unique molecular weight, castor oil penetrates the skin deeper than coconut or jojoba oil. It acts like a vehicle, pulling the botanical benefits of your essential oils directly into your deep tissue layers. \n\nFor your next targeted massage, mix 2 drops of essential oil with a tablespoon of Bioorganica Castor.",
+                how: "Copy: Gemini Pro. \nVisuals: Faceless Reel. Use Nanobanana 2 Flash to create clean graphics showing a '2 drops to 1 tbsp' ratio. Animate these graphics over soft video backgrounds in Canva AI Pro.",
+                why: "Provides practical, daily-use value. The Flash-generated graphics make the recipe instantly understandable visually."
+            },
+            { 
+                week: 'Week 3', day: 'Sat', format: 'Carousel', pillar: 'P1', 
+                concept: 'The Lifecycle of a Castor Seed.', 
+                desc: 'Visual journey from planting to pressing.',
+                script: "[Slide 1]: From Soil to Bottle: The Lifecycle of our Castor.\n[Slide 2]: The Soil: Prepared with natural compost, avoiding synthetic fertilizers in arid, mineral-rich regions.\n[Slide 3]: The Harvest: Hand-picked at peak maturity when the spiky seed pods dry out and pop open naturally.\n[Slide 4]: The Press: Cold-pressed immediately in small batches to prevent oxidation. Pure, thick, raw.",
+                how: "Copy: Claude. \nVisuals: Generate 4 hyper-realistic, distinct stages of the seed lifecycle using Nanobanana Pro. Assemble the carousel in Canva AI Pro.",
+                why: "Reinforces the 'Source & Soil' pillar. The Pro image model is required here to ensure all 4 stages look like high-end documentary photography."
+            },
+            { 
+                week: 'Week 3', day: 'Sun', format: 'Reel', pillar: 'P4', 
+                concept: 'Sunday Skin Barrier Repair.', 
+                desc: 'Aesthetic skincare video using Castor oil.',
+                script: "[No voiceover, just calming ASMR]\n[Caption]: Setting your skin up for the week. Castor oil is highly humectant, meaning it draws moisture from the air directly into your skin. \n\nApplying a tiny amount as the final layer of your Sunday skincare routine locks in all your serums and repairs a damaged skin barrier overnight. Wake up glowing.",
+                how: "Copy: Claude. \nVisuals: Use Canva AI Pro to source aesthetic skincare B-roll (mirror reflection, gentle application). Pair with soft ASMR audio.",
+                why: "Highlights the cosmetic/skincare use case, highly relevant to the female 25-45 demographic. Easy to execute natively in Canva."
+            },
+
+            // --- WEEK 4 ---
+            { 
+                week: 'Week 4', day: 'Mon', format: 'Static', pillar: 'P3', 
+                concept: 'The Industrial Standard (B2B).', 
+                desc: 'Targeting manufacturers with quality facts.',
+                script: "Why top-tier manufacturers demand unadulterated Castor.\n\nFrom premium natural latex production to high-end Ayurvedic cosmetics, chemical stability is everything. When manufacturers use Bioorganica raw castor oil, they guarantee their end-product is free of hexane residues and unpredictable mineral oil fillers. \n\nPure raw materials equal superior end-products.",
+                how: "Copy: Gemini Pro (structured B2B tone). \nVisuals: Generate a hyper-realistic studio shot of castor oil alongside a high-end cosmetic jar using Nanobanana Pro. Finalize in Adobe Express Pro.",
+                why: "Directly speaks to the B2B audience. Nanobanana Pro ensures the imagery looks professional enough for industrial buyers."
+            },
+            { 
+                week: 'Week 4', day: 'Tue', format: 'Carousel', pillar: 'P4', 
+                concept: '3 Uses for Raw Castor Oil.', 
+                desc: 'Highlighting versatility.',
+                script: "[Slide 1]: 1 Bottle of Castor Oil. 3 Powerful Uses.\n[Slide 2]: 1. Eyebrow & Lash Growth: Apply a tiny drop nightly to encourage thick, natural growth.\n[Slide 3]: 2. Liver Packs: Soak a flannel cloth in warm castor oil and place over the liver to support deep organ detox.\n[Slide 4]: 3. Deep Scalp Treatment: Massage into the scalp to stimulate circulation and heal dandruff naturally.",
+                how: "Copy: Gemini Pro. \nVisuals: Use Nanobanana 2 Flash to generate clean icons for an eye, an abdomen, and hair. Build the listicle in Canva AI Pro.",
+                why: "Drives product usage. Flash icons keep the design scalable and easy to read on mobile devices."
+            },
+            { 
+                week: 'Week 4', day: 'Wed', format: 'Reel', pillar: 'P1', 
+                concept: 'Meet the Makers.', 
+                desc: 'Short interview/quote from a farming partner.',
+                script: "[Voiceover/Subtitle of Farmer]: 'When you treat the earth with respect, the harvest takes care of you.'\n[Caption]: The true faces behind Bioorganica. Our promise of purity is only possible because of the dedication of our farming partners. Ethical sourcing isn't a marketing buzzword for us; it is our entire business model. 🌾",
+                how: "Copy: Claude (for authentic human storytelling). \nVisuals: Source authentic, documentary-style farmer B-roll from Canva AI Pro. Add clear subtitle overlays.",
+                why: "Maximum emotional trust building. Fulfills the 'farmer-linked' mandate in the brand overview."
+            },
+            { 
+                week: 'Week 4', day: 'Thu', format: 'Faceless Reel', pillar: 'P5', 
+                concept: 'Why We Exist (Recap).', 
+                desc: 'Kinetic typography brand anthem.',
+                script: "Look at the aisles of a modern pharmacy. Most of what we are sold is mass-produced, chemically extracted, and disconnected from its natural source. \n\nBioorganica was built as a response to that. We believe you have a right to know exactly where your wellness products come from, how they were made, and who grew the seeds. We exist to bridge the gap between the traditional farm and your modern routine.\n\nThank you for choosing a better, cleaner ecosystem.",
+                how: "Copy: Claude (Brand Manifesto tone). \nVisuals: Faceless Reel. Create a powerful kinetic typography video in Canva AI Pro, with text fading in/out to a confident AI Voiceover.",
+                why: "A powerful brand anthem capping off the month. Avoiding an avatar here makes it feel more like a premium documentary or brand manifesto."
+            },
+            { 
+                week: 'Week 4', day: 'Fri', format: 'Static', pillar: 'P2', 
+                concept: 'Shelf Life of Pure Castor.', 
+                desc: 'Educating on natural preservation.',
+                script: "Real botanicals behave differently.\n\nRefined, chemical oils can sit on a shelf for years because they are devoid of life. Bioorganica cold-pressed castor oil is incredibly stable naturally, but it is rich in active nutrients.\n\nKeep it away from direct sunlight, store it in a cool place, and enjoy its thick, golden purity. Purity is a living thing.",
+                how: "Copy: Gemini Pro. \nVisuals: Use Nanobanana Pro to generate a hyper-realistic, dark, aesthetic pantry shelf with ambient lighting. Grade in Adobe Express Pro.",
+                why: "Educates on proper storage. The Pro generation model is perfect for creating that moody, premium 'dark academia' aesthetic for the pantry."
+            },
+            { 
+                week: 'Week 4', day: 'Sat', format: 'Carousel', pillar: 'P3', 
+                concept: 'Transitioning Your Vanity.', 
+                desc: 'Actionable steps for the conscious consumer.',
+                script: "[Slide 1]: Ready to make the switch? How to transition your vanity to pure Castor.\n[Slide 2]: Step 1: Audit. Check the back labels of your body lotions and hair serums. If you see synthetic fragrances or 'liquid paraffin', it's time to upgrade.\n[Slide 3]: Step 2: Swap the basics. Replace your chemical lash serums and synthetic joint-rub creams with pure Cold-Pressed Castor Oil.\n[Slide 4]: Step 3: Notice the difference. Pay attention to how your hair grows, how your joints feel, and how your skin retains moisture.",
+                how: "Copy: Gemini Pro. \nVisuals: No complex image generation needed. Use Canva AI Pro to create high-contrast, action-oriented typography slides.",
+                why: "Leads to consideration. Keeps the execution simple so the user focuses entirely on the actionable steps."
+            },
+            { 
+                week: 'Week 4', day: 'Sun', format: 'Reel', pillar: 'P1', 
+                concept: 'From Soil to Soul (Month Recap).', 
+                desc: 'Beautiful montage of the month.',
+                script: "[Text Overlay]: Rooted in purity. \n[Caption]: From the hands of our farmers to the heart of your home. Thank you for being part of the Bioorganica ecosystem. Here is to clean consumption, ethical sourcing, and uncompromising pure castor oil. 🌿🤍",
+                how: "Copy: Claude. \nVisuals: Build a fast-cut montage in Canva AI Pro using the best visual moments from the month (farmers, thick oil pouring, skincare, packs).",
+                why: "The perfect emotional wrap-up. Repurposes existing content to save execution time while delivering a high emotional impact."
+            }
+        ];
+
+        // --- UI INITIALIZATION ---
+
+        function initPillarsUI() {
+            const navContainer = document.getElementById('pillar-nav');
+            let currentPillarId = 'P1';
+            
+            pillarsData.forEach(p => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-6 py-4 rounded-xl font-medium transition-all duration-300 border ${p.id === currentPillarId ? 'bg-green-900 text-beige-100 border-green-900 shadow-md' : 'bg-white text-green-900 border-beige-300 hover:bg-beige-200'}`;
+                btn.innerHTML = `<span class="text-xl mr-2">${p.icon}</span> <span class="hidden sm:inline">${p.id}:</span> ${p.title.split(': ')[1]}`;
+                btn.onclick = () => {
+                    currentPillarId = p.id;
+                    Array.from(navContainer.children).forEach(c => c.className = `w-full text-left px-6 py-4 rounded-xl font-medium transition-all duration-300 border bg-white text-green-900 border-beige-300 hover:bg-beige-200`);
+                    btn.className = `w-full text-left px-6 py-4 rounded-xl font-medium transition-all duration-300 border bg-green-900 text-beige-100 border-green-900 shadow-md`;
+                    renderPillarContent(p.id);
+                };
+                navContainer.appendChild(btn);
+            });
+
+            renderPillarContent(currentPillarId);
+        }
+
+        function renderPillarContent(id) {
+            const data = pillarsData.find(p => p.id === id);
+            const container = document.getElementById('pillar-content');
+            const ideasList = data.ideas.map(idea => `<li class="flex items-start"><span class="text-green-accent mr-2 mt-1">✓</span> ${idea}</li>`).join('');
+
+            container.innerHTML = `
+                <div class="fade-in h-full flex flex-col justify-center">
+                    <div>
+                        <div class="inline-block px-3 py-1 bg-beige-200 text-green-800 text-xs font-bold uppercase tracking-wider rounded-full mb-4">${data.id}</div>
+                        <h3 class="text-2xl sm:text-3xl font-serif font-bold text-green-900 mb-2">${data.icon} ${data.title.split(': ')[1]}</h3>
+                    </div>
+                    
+                    <div class="my-6 p-5 sm:p-6 bg-green-50 border-l-4 border-green-accent rounded-r-xl">
+                        <p class="text-green-800 font-serif italic text-lg sm:text-xl">"${data.messaging.replace(/"/g, '')}"</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 mt-auto">
+                        <div>
+                            <h4 class="font-bold text-green-900 mb-2 border-b border-beige-300 pb-2">Primary Goal</h4>
+                            <p class="text-green-800 text-sm leading-relaxed">${data.goal}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-green-900 mb-2 border-b border-beige-300 pb-2">Content Focus</h4>
+                            <ul class="text-sm text-green-800 space-y-2">
+                                ${ideasList}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initCalendarUI() {
+            const filterSelect = document.getElementById('pillar-filter');
+            filterSelect.addEventListener('change', (e) => {
+                renderCalendarWeeks(e.target.value);
+            });
+            renderCalendarWeeks('all');
+        }
+
+        function renderCalendarWeeks(pillarFilter) {
+            const container = document.getElementById('calendar-container');
+            const emptyState = document.getElementById('empty-state');
+            container.innerHTML = '';
+            
+            let totalCardsShown = 0;
+            const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+
+            weeks.forEach(weekLabel => {
+                // Filter data for this specific week AND the selected pillar
+                const weekData = calendarData.filter(item => 
+                    item.week === weekLabel && 
+                    (pillarFilter === 'all' || item.pillar === pillarFilter)
+                );
+
+                if (weekData.length > 0) {
+                    totalCardsShown += weekData.length;
+                    
+                    // Create Week Section Wrapper
+                    const weekSection = document.createElement('div');
+                    weekSection.className = 'fade-in';
+                    
+                    // Week Header
+                    const weekHeader = document.createElement('h3');
+                    weekHeader.className = 'text-2xl font-serif font-bold text-green-900 border-b-2 border-beige-300 pb-3 mb-6 flex items-center gap-3';
+                    weekHeader.innerHTML = `<span class="bg-green-900 text-beige-100 px-3 py-1 rounded text-sm font-sans tracking-widest uppercase">${weekLabel}</span> Schedule`;
+                    weekSection.appendChild(weekHeader);
+
+                    // Grid for the days
+                    const daysGrid = document.createElement('div');
+                    daysGrid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6';
+
+                    weekData.forEach(item => {
+                        const formatColorMap = {
+                        'Static': 'bg-blue-100 text-blue-800',
+                        'Carousel': 'bg-amber-100 text-amber-800',
+                        'Reel': 'bg-purple-100 text-purple-800',
+                        'Faceless Reel': 'bg-rose-100 text-rose-800'
+                    };
+                    const badgeClass = formatColorMap[item.format] || 'bg-gray-100 text-gray-800';
+                        const pillarInfo = pillarsData.find(p => p.id === item.pillar);
+
+                        const card = document.createElement('div');
+                        card.className = 'bg-white border border-beige-300 rounded-xl p-5 shadow-sm hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 flex flex-col h-full cursor-pointer relative group';
+                        // Attach event listener directly to the card
+                        card.addEventListener('click', () => openModal(item));
+                        
+                        card.innerHTML = `
+                            <div class="absolute inset-0 bg-green-900/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="text-sm font-bold text-green-accent uppercase tracking-wider w-10 text-center border-b-2 border-green-accent pb-1">${item.day}</div>
+                                <span class="text-[10px] font-bold px-2 py-1 rounded-full ${badgeClass}">${item.format}</span>
+                            </div>
+                            <h4 class="font-serif font-bold text-lg text-green-900 leading-tight mb-2">${item.concept}</h4>
+                            <p class="text-sm text-green-800/80 mb-5 flex-grow line-clamp-3">${item.desc}</p>
+                            
+                            <div class="mt-auto pt-4 border-t border-beige-200 flex items-center justify-between">
+                                <div class="flex items-center gap-2 bg-beige-100 px-2 py-1 rounded text-xs font-semibold text-green-900 border border-beige-300">
+                                    <span>${pillarInfo.icon}</span>
+                                    <span>${item.pillar}</span>
+                                </div>
+                                <span class="text-xs font-bold text-green-accent group-hover:translate-x-1 transition-transform">View Details →</span>
+                            </div>
+                        `;
+                        daysGrid.appendChild(card);
+                    });
+
+                    weekSection.appendChild(daysGrid);
+                    container.appendChild(weekSection);
+                }
+            });
+
+            if (totalCardsShown === 0) {
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+            } else {
+                container.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+            }
+        }
+
+        // --- MODAL LOGIC ---
+        function openModal(data) {
+            const modal = document.getElementById('content-modal');
+            const content = document.getElementById('modal-content');
+            const backdrop = document.getElementById('modal-backdrop');
+            const pillarInfo = pillarsData.find(p => p.id === data.pillar);
+
+            const formatColorMap = {
+                'Static': 'bg-blue-100 text-blue-800',
+                'Carousel': 'bg-amber-100 text-amber-800',
+                'Reel': 'bg-purple-100 text-purple-800',
+                'Faceless Reel': 'bg-rose-100 text-rose-800'
+            };
+
+            // Populate Data
+            document.getElementById('modal-badge').className = `text-[10px] font-bold px-2 py-1 rounded-full ${formatColorMap[data.format] || 'bg-gray-100 text-gray-800'}`;
+            document.getElementById('modal-badge').textContent = data.format;
+            document.getElementById('modal-date').textContent = `${data.week} • ${data.day}`;
+            document.getElementById('modal-title').textContent = data.concept;
+            
+            document.getElementById('modal-pillar-icon').textContent = pillarInfo.icon;
+            document.getElementById('modal-pillar-title').textContent = pillarInfo.title;
+            document.getElementById('modal-pillar-goal').textContent = pillarInfo.goal;
+
+            document.getElementById('modal-why').innerHTML = data.why;
+            document.getElementById('modal-how').innerHTML = data.how;
+            document.getElementById('modal-script').innerHTML = data.script; // Using innerHTML to preserve line breaks if any, though CSS whitespace-pre-line handles textContent well.
+
+            // Show Modal
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Trigger animations
+            setTimeout(() => {
+                backdrop.classList.remove('opacity-0');
+                backdrop.classList.add('opacity-100');
+                content.classList.remove('opacity-0', 'scale-95');
+                content.classList.add('opacity-100', 'scale-100');
+            }, 10);
+
+            // Close on backdrop click
+            backdrop.onclick = closeModal;
+        }
+
+        function copyScript() {
+            const scriptText = document.getElementById('modal-script').innerText;
+            
+            // Create a temporary textarea element to handle the copy command
+            const textArea = document.createElement("textarea");
+            textArea.value = scriptText;
+            
+            // Prevent scrolling to bottom
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if(successful) {
+                    const copyBtn = document.getElementById('copy-script-btn');
+                    
+                    // Visual feedback
+                    copyBtn.innerHTML = '✓ COPIED!';
+                    copyBtn.classList.add('bg-green-accent', 'text-white');
+                    copyBtn.classList.remove('text-green-800/60', 'hover:bg-green-200/50', 'hover:text-green-900');
+                    
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        copyBtn.innerHTML = 'COPY';
+                        copyBtn.classList.remove('bg-green-accent', 'text-white');
+                        copyBtn.classList.add('text-green-800/60', 'hover:bg-green-200/50', 'hover:text-green-900');
+                    }, 2000);
+                }
+            } catch (err) {
+                console.error('Oops, unable to copy', err);
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('content-modal');
+            const content = document.getElementById('modal-content');
+            const backdrop = document.getElementById('modal-backdrop');
+
+            // Trigger exit animations
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.add('opacity-0');
+            content.classList.remove('opacity-100', 'scale-100');
+            content.classList.add('opacity-0', 'scale-95');
+
+            // Hide modal after animation
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !document.getElementById('content-modal').classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        function initChart() {
+            // Calculate pillar distribution across ALL 28 posts
+            const counts = { P1: 0, P2: 0, P3: 0, P4: 0, P5: 0 };
+            calendarData.forEach(item => {
+                if(counts[item.pillar] !== undefined) counts[item.pillar]++;
+            });
+
+            const labels = pillarsData.map(p => p.title.split(': ')[1]);
+            const data = Object.values(counts);
+            // Earthy color palette
+            const backgroundColors = [
+                '#4A6B3C', // Accent Green
+                '#2A4026', // Dark Green
+                '#8B9B7B', // Muted Olive
+                '#DCD4C0', // Dark Beige
+                '#C5B9A5'  // Medium Beige
+            ];
+
+            const ctx = document.getElementById('pillarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderWidth: 2,
+                        borderColor: '#FDFBF7'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false }, 
+                        tooltip: {
+                            backgroundColor: '#1A2F16',
+                            padding: 12,
+                            titleFont: { family: "'Inter', sans-serif", size: 14 },
+                            bodyFont: { family: "'Inter', sans-serif", size: 13 },
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.raw} Posts (${Math.round((context.raw/28)*100)}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Build Custom Legend based on 28 total items
+            const legendContainer = document.getElementById('chart-legend-custom');
+            pillarsData.forEach((p, index) => {
+                const count = counts[p.id];
+                const percentage = Math.round((count/28)*100);
+                legendContainer.innerHTML += `
+                    <li class="flex items-center justify-between pb-2 border-b border-beige-200 last:border-0">
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full" style="background-color: ${backgroundColors[index]}"></span>
+                            <span class="text-green-900 font-medium">${p.icon} ${labels[index]}</span>
+                        </div>
+                        <div class="text-green-800 font-bold">${count} <span class="text-xs font-normal text-green-800/60 ml-1">(${percentage}%)</span></div>
+                    </li>
+                `;
+            });
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            initPillarsUI();
+            initCalendarUI();
+            initChart();
+        });
+
+    </script>
+</body>
+</html>
